@@ -1,0 +1,14 @@
+ul li.completed label {
+  text-decoration: line-through;
+}
+
+ul li.editing .todo-remove {
+  display: none;
+}
+ul li.editing label {
+  display: none;
+}
+
+ul li.editing .todo-checkbox {
+  display: none;
+}
