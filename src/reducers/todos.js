@@ -6,7 +6,8 @@ import {
     EDIT_TODO_SUCCESS,
     GET_TODOS_SUCCESS,
     ADD_TODO_SUCCESS,
-    TOGGLE_TODO_SUCCESS
+    TOGGLE_TODO_SUCCESS,
+    CLEAR_COMPLETED_TODOS_SUCCESS
 } from '../constants/ActionTypes';
 
 export default function todos(state = [], action) {
@@ -41,6 +42,11 @@ export default function todos(state = [], action) {
         case EDIT_TODO_SUCCESS:
             return state.map(todo =>
                 todo.id === action.payload.id ? {...todo, text: action.payload.text} : todo
+            );
+
+        case CLEAR_COMPLETED_TODOS_SUCCESS:
+            return state.filter(todo=>
+               action.payload.ids.indexOf(todo.id) === -1
             );
 
         default:

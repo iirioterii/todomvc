@@ -16,7 +16,10 @@ import {
     TOGGLE_TODO_SUCCESS,
     EDIT_TODO,
     EDIT_TODO_ERROR,
-    EDIT_TODO_SUCCESS
+    EDIT_TODO_SUCCESS,
+    CLEAR_COMPLETED_TODOS,
+    CLEAR_COMPLETED_TODOS_ERROR,
+    CLEAR_COMPLETED_TODOS_SUCCESS
 } from '../constants/ActionTypes';
 
 
@@ -27,17 +30,20 @@ export default function fetching(state = false, action) {
         case DELETE_TODO:
         case TOGGLE_TODO:
         case EDIT_TODO:
+        case CLEAR_COMPLETED_TODOS:
             return true;
         case ADD_TODO_ERROR:
         case GET_TODOS_ERROR:
         case DELETE_TODO_ERROR:
         case TOGGLE_TODO_ERROR:
         case EDIT_TODO_ERROR:
+        case CLEAR_COMPLETED_TODOS_ERROR:
         case ADD_TODO_SUCCESS:
         case GET_TODOS_SUCCESS:
         case DELETE_TODO_SUCCESS:
         case TOGGLE_TODO_SUCCESS:
         case EDIT_TODO_SUCCESS:
+        case CLEAR_COMPLETED_TODOS_SUCCESS:
             return false;
         default:
             return state;

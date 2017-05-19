@@ -18,6 +18,9 @@ import {
     GET_TODOS,
     GET_TODOS_ERROR,
     GET_TODOS_SUCCESS,
+    CLEAR_COMPLETED_TODOS,
+    CLEAR_COMPLETED_TODOS_SUCCESS,
+    CLEAR_COMPLETED_TODOS_ERROR,
     CHANGE_FILTER,
 
 } from '../constants/ActionTypes';
@@ -102,6 +105,20 @@ export function editTodo(id, text) {
             dispatch({type: EDIT_TODO_SUCCESS, payload: data})
         }).fail(function (jqXHR, textStatus,) {
             dispatch({type: EDIT_TODO_ERROR, payload: textStatus})
+        });
+    };
+}
+
+export function clearCompleted() {
+    return (dispatch) => {
+        dispatch({type: CLEAR_COMPLETED_TODOS});
+        $.ajax({
+            method: "delete",
+            url: API_SERVER_URL
+        }).done(function (data) {
+            dispatch({type: CLEAR_COMPLETED_TODOS_SUCCESS, payload: data})
+        }).fail(function (jqXHR, textStatus,) {
+            dispatch({type: CLEAR_COMPLETED_TODOS_ERROR, payload: textStatus})
         });
     };
 }

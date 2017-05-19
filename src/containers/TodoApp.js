@@ -16,6 +16,16 @@ class TodoApp extends Component {
         this.props.todosActions.getTodos();
     }
 
+    getCountOfCompletedTodos() {
+        if (this.props.todos) {
+            const completedItems = this.props.todos.filter((todo) =>
+                todo.completed === true
+            );
+            return completedItems.length;
+        }
+        return 0;
+    }
+
     getCountOfActiveTodos() {
         if (this.props.todos) {
             const activeItems = this.props.todos.filter((todo) =>
@@ -47,7 +57,7 @@ class TodoApp extends Component {
     render() {
         const todosActions = this.props.todosActions;
 
-        let progressBar = this.props.fetching ?  <ProgressBar/> : '';
+        let progressBar = this.props.fetching ? <ProgressBar/> : '';
         let errors = this.props.errors ? <Errors errors={this.props.errors}/> : '';
 
         return (
@@ -57,6 +67,8 @@ class TodoApp extends Component {
                 <Filters
                     changeFilter={todosActions.changeFilter}
                     countOfActiveTodos={this.getCountOfActiveTodos()}
+                    countOfCompletedTodos={this.getCountOfCompletedTodos()}
+                    clearCompleted={todosActions.clearCompleted}
                 />
                 {progressBar}
                 {errors}
