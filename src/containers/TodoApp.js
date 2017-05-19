@@ -47,15 +47,8 @@ class TodoApp extends Component {
     render() {
         const todosActions = this.props.todosActions;
 
-        let progressBar;
-        if (this.props.fetching) {
-            progressBar = <ProgressBar/>;
-        }
-
-        let errors;
-        if (this.props.errors) {
-            errors = <Errors errors={this.props.errors}/>;
-        }
+        let progressBar = this.props.fetching ?  <ProgressBar/> : '';
+        let errors = this.props.errors ? <Errors errors={this.props.errors}/> : '';
 
         return (
             <div className="main">
