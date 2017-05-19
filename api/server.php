@@ -87,15 +87,28 @@ switch ($_SERVER['REQUEST_METHOD']) {
         fclose($deletedata);
 
         $data = getData();
-
-        foreach ($data as $index => $item) {
-            if ($item['id'] == $indexId) {
-                unset($data[$index]);
-                break;
+        if($indexId) {
+            //del one by id
+            foreach ($data as $index => $item) {
+                if ($item['id'] == $indexId) {
+                    unset($data[$index]);
+                    break;
+                }
             }
-        }
-        setData($data);
+            setData($data);
 
-        echo json_encode(['id'=>$indexId]);
+            echo json_encode(['id' => $indexId]);
+        } else {
+            //del completed
+            $deletedIds = [];
+            foreach ($data as $index => $item) {
+                if ($item['completed'] === true) {
+                    $deletedIds[]= $item['id'];
+                    unset($data[$index]);
+               }
+            }
+            setData($data);
+            echo json_encode(['ids' => $deletedIds]);
+        }
         break;
 }
