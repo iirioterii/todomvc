@@ -40,9 +40,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
     case 'POST':
         $data = getData() ?: [];
+        $post = fopen("php://input", "r");
+        $postParams = json_decode(urldecode(stream_get_contents($post)), true);
+        fclose($post);
         $todo = [
-            'id' => $_POST['id'],
-            'text' => $_POST['text'],
+            'id' => $postParams['id'],
+            'text' => $postParams['text'],
             'completed' => false
         ];
         array_push($data, $todo);
@@ -52,23 +55,15 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
     case 'PUT':
         $todo = [];
-        $putdata = fopen("php://input", "r");
-        $str = urldecode(stream_get_contents($putdata));
-        fclose($putdata);
-        $splittedPut = explode("&", $str);
-
-        array_walk($splittedPut, function (&$value) use (&$todo) {
-            $splitted = explode("=", $value);
-            $todo[$splitted[0]] = $splitted[1];
-        });
-
-
+        $put = fopen("php://input", "r");
+        $putParams = json_decode(urldecode(stream_get_contents($put)), true);
+        fclose($put);
         $data = getData();
         foreach ($data as $index => &$item) {
-            if ($item['id'] == $todo['id']) {
-                if (isset($todo['text'])) {
+            if ($item['id'] == $putParams['id']) {
+                if (isset($putParams['text'])) {
                     //edit
-                    $item['text'] = $todo['text'];
+                    $item['text'] = $putParams['text'];
                 } else {
                     //toggle
                     $item['completed'] = !$item['completed'];
@@ -77,7 +72,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
             }
         }
         setData($data);
-        echo json_encode($todo);
+        echo json_encode($putParams);
         break;
 
     case 'DELETE':

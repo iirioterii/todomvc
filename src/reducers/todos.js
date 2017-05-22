@@ -15,11 +15,7 @@ export default function todos(state = [], action) {
         case ADD_TODO_SUCCESS:
             return [
                 ...state,
-                {
-                    id: action.payload.id,
-                    text: action.payload.text,
-                    completed: false
-                }
+                action.payload
             ];
 
         case GET_TODOS_SUCCESS:
@@ -46,7 +42,7 @@ export default function todos(state = [], action) {
 
         case CLEAR_COMPLETED_TODOS_SUCCESS:
             return state.filter(todo=>
-               action.payload.ids.indexOf(todo.id) === -1
+               action.payload.indexOf(todo.id) === -1
             );
 
         default:

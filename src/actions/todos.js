@@ -1,7 +1,7 @@
 /**
  * Created by yuriyreva on 12.05.17.
  */
-import $ from "jquery";
+import fetch from 'isomorphic-fetch';
 import {
     ADD_TODO,
     ADD_TODO_ERROR,
@@ -26,20 +26,25 @@ import {
 } from '../constants/ActionTypes';
 import {API_SERVER_URL} from '../constants/Server';
 
+function handleErrors(response) {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
+}
+
+function returnJson(response) {
+    return response.json();
+}
 
 export function getTodos() {
     return (dispatch) => {
         dispatch({type: GET_TODOS});
-        $.ajax({
-            method: "get",
-            url: API_SERVER_URL,
-            dataType: "json"
-        }).done(function (data) {
-            dispatch({type: GET_TODOS_SUCCESS, payload: data})
-
-        }).fail(function (jqXHR, textStatus) {
-            dispatch({type: GET_TODOS_ERROR, payload: textStatus})
-        });
+        return fetch(API_SERVER_URL)
+            .then(handleErrors)
+            .then(returnJson)
+            .then(data => dispatch({type: GET_TODOS_SUCCESS, payload: data}))
+            .catch(error => dispatch({type: GET_TODOS_ERROR, payload: error.message}));
     }
 }
 
@@ -50,30 +55,22 @@ export function addTodo(id, text) {
             text: text
         };
         dispatch({type: ADD_TODO});
-        $.ajax({
-            method: "post",
-            url: API_SERVER_URL,
-            data: data
-        }).done(function (data) {
-            dispatch({type: ADD_TODO_SUCCESS, payload: data})
-        }).fail(function (jqXHR, textStatus,) {
-            dispatch({type: ADD_TODO_ERROR, payload: textStatus})
-        });
+        return fetch(API_SERVER_URL, {method: 'POST', body: JSON.stringify(data)})
+            .then(handleErrors)
+            .then(returnJson)
+            .then(data => dispatch({type: ADD_TODO_SUCCESS, payload: data}))
+            .catch(error => dispatch({type: ADD_TODO_ERROR, payload: error.message}));
     }
 }
 
 export function deleteTodo(id) {
     return (dispatch) => {
         dispatch({type: DELETE_TODO});
-        $.ajax({
-            method: "delete",
-            url: API_SERVER_URL,
-            data: id
-        }).done(function (data) {
-            dispatch({type: DELETE_TODO_SUCCESS, payload: data.id})
-        }).fail(function (jqXHR, textStatus,) {
-            dispatch({type: DELETE_TODO_ERROR, payload: textStatus})
-        });
+        return fetch(API_SERVER_URL, {method: 'DELETE', body: id})
+            .then(handleErrors)
+            .then(returnJson)
+            .then(data => dispatch({type: DELETE_TODO_SUCCESS, payload: data.id}))
+            .catch(error => dispatch({type: DELETE_TODO_ERROR, payload: error.message}));
     };
 }
 
@@ -81,15 +78,11 @@ export function toggleTodo(id) {
     return (dispatch) => {
         let data = {'id': id};
         dispatch({type: TOGGLE_TODO});
-        $.ajax({
-            method: "put",
-            url: API_SERVER_URL,
-            data: data
-        }).done(function (data) {
-            dispatch({type: TOGGLE_TODO_SUCCESS, payload: data.id})
-        }).fail(function (jqXHR, textStatus,) {
-            dispatch({type: TOGGLE_TODO_ERROR, payload: textStatus})
-        });
+        return fetch(API_SERVER_URL, {method: 'PUT', body: JSON.stringify(data)})
+            .then(handleErrors)
+            .then(returnJson)
+            .then(data => dispatch({type: TOGGLE_TODO_SUCCESS, payload: data.id}))
+            .catch(error => dispatch({type: TOGGLE_TODO_ERROR, payload: error.message}));
     };
 }
 
@@ -97,29 +90,22 @@ export function editTodo(id, text) {
     return (dispatch) => {
         let data = {'id': id, 'text': text};
         dispatch({type: EDIT_TODO});
-        $.ajax({
-            method: "put",
-            url: API_SERVER_URL,
-            data: data
-        }).done(function (data) {
-            dispatch({type: EDIT_TODO_SUCCESS, payload: data})
-        }).fail(function (jqXHR, textStatus,) {
-            dispatch({type: EDIT_TODO_ERROR, payload: textStatus})
-        });
+        return fetch(API_SERVER_URL, {method: 'PUT', body: JSON.stringify(data)})
+            .then(handleErrors)
+            .then(returnJson)
+            .then(data => dispatch({type: EDIT_TODO_SUCCESS, payload: data}))
+            .catch(error => dispatch({type: EDIT_TODO_ERROR, payload: error.message}));
     };
 }
 
 export function clearCompleted() {
     return (dispatch) => {
         dispatch({type: CLEAR_COMPLETED_TODOS});
-        $.ajax({
-            method: "delete",
-            url: API_SERVER_URL
-        }).done(function (data) {
-            dispatch({type: CLEAR_COMPLETED_TODOS_SUCCESS, payload: data})
-        }).fail(function (jqXHR, textStatus,) {
-            dispatch({type: CLEAR_COMPLETED_TODOS_ERROR, payload: textStatus})
-        });
+        return fetch(API_SERVER_URL, {method: 'DELETE'})
+            .then(handleErrors)
+            .then(returnJson)
+            .then(data => dispatch({type: CLEAR_COMPLETED_TODOS_SUCCESS, payload: data.ids}))
+            .catch(error => dispatch({type: CLEAR_COMPLETED_TODOS_ERROR, payload: error.message}));
     };
 }
 
